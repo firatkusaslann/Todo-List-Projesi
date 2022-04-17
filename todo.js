@@ -7,7 +7,7 @@ const secondCardBody = document.querySelectorAll(".card-body")[1];
 const filter = document.querySelector("#filter");
 const clearButton = document.querySelector("#clear-todos");
 
-eventListeners();
+eventListeners(); // eventListeners function'ını çalıştırır
 
 // Tüm eventListener'lar
 function eventListeners() {
@@ -18,11 +18,10 @@ function addTodo(e) {
   const newTodo = todoInput.value.trim(); // todoInput değişkenindeki değeri value ile alıp newTodo değişkenine atadık. // trim özellği sayesinde sağdan soldan boşluklar kaldırıldı
 
   if (newTodo === "") {
-    //<div class="alert alert-danger" role="alert">This is a danger alert—check it out!</div>
-    showAlert("danger", "Lütfen bir todo girin...");
+    showAlert("danger", "Lütfen bir todo girin..."); // inputtaki değer boş ise danger alert çalışacak
   } else {
     addTodoToUI(newTodo);
-    showAlert("success", "Todo Oluşturuldu...");
+    showAlert("success", "Todo Oluşturuldu..."); // inputtaki değer dolu ise success çalışacak
   }
 
   e.preventDefault(); // Elementin varsayılan özelliğini engeller
@@ -30,13 +29,14 @@ function addTodo(e) {
 
 function showAlert(type, message) {
   const alert = document.createElement("div");
-  alert.className = `alert alert-${type}`;
-  alert.textContent = message;
-  firstCardBody.appendChild(alert);
-  //  setTimeout metodu
+  alert.className = `alert alert-${type}`; // typedan gelen değeri kullnaacak
+  alert.textContent = message; // messagedan gelen değeri kullanacak
+  firstCardBody.appendChild(alert); // alert değişkenini firstCardBody nin child ı olarak ekleycek
+
+  //  setTimeout metodu  // işlemin beli bir süre sonra gerçekleşmesini sağlayacak
   setTimeout(function () {
-    alert.remove();
-  }, 2000);
+    alert.remove(); // alert divini kaldırır
+  }, 2000); // 2 saniye sonra divi kaldıracak
 }
 
 // string değerini UI'a ekleyecek.
@@ -53,9 +53,9 @@ function addTodoToUI(newTodo) {
   listItem.className = "list-group-item d-flex justify-content-between";
 
   listItem.appendChild(document.createTextNode(newTodo)); // Text Node Ekleme
-  listItem.appendChild(link);
+  listItem.appendChild(link); // link elementini listItem içine child olarak ekler
 
   // Todo List'e List Item'ı Ekleme
-  todoList.appendChild(listItem);
-  todoInput.value = "";
+  todoList.appendChild(listItem); //listItem elementini todoList içine child olarak ekler
+  todoInput.value = ""; // submit olduktan sonra inputu sıfırlar
 }
