@@ -1,95 +1,46 @@
-// Tüm Elementeri Seçme
 const form = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo");
 const todoList = document.querySelector(".list-group");
 const firstCardBody = document.querySelectorAll(".card-body")[0];
 const secondCardBody = document.querySelectorAll(".card-body")[1];
-const filter = document.querySelector("#filter");
-const clearButton = document.querySelector("#clear-todos");
+const filter = document.querySelectorAll("#filter");
+const clearTodos = document.querySelector("#clear-todos");
 
-eventListeners(); // eventListeners function'ını çalıştırır
+eventListeners(); // eventListeners içindeki event'leri burada çalıştırıyoruz.
 
-// Tüm eventListener'lar
-function eventListeners() {
-  form.addEventListener("submit", addTodo); // form değişkeninde submit olayı gerçekleşirse addTodo ismindeki function çalışacak
-  document.addEventListener("DOMContentLoaded", loadAllTodosToUI);
-  secondCardBody.addEventListener("click", deleteTodo);
+function eventListeners() { // Tüm eventListener'ları burada vereceğiz. bu yüzden eventListeners isminde bir funtion açtık.
+  form.addEventListener("submit", addTodo); // form elementinin içinde her hangi bir submit gerçekleştiğinde addTodo function'ı çalışsın dedik. 
 }
 
-function deleteTodo(e) {
-  if (e.target.className === "fa fa-remove");
-  {
-    e.target.parentElement.parentElement.remove();
-    showAlert("success", "Todo Silindi");
-  }
+function addTodo(e) { 
+  const newTodo = todoInput.value.trim();// todoInput'taki değeri aldık ve sağından solundan boşlukları temizleyerek newTodo değişkenine atadık.
+
+  addTodoToUI(newTodo);
+
+  e.preventDefault(); // Tarayıcının varsayılan özelliklerini engelledik. 
 }
 
-function loadAllTodosToUI() {
-  let todos = getTodosFromStorage();
-  todos.forEach(function (todo) {
-    addTodoToUI(todo);
-  });
-}
+function addTodoToUI(newTodo) { // newTodo değişkeninden gelen string değerini list item olarak UI'a ekleyecek.
+ 
+  //List Item Oluşturma.
+  const listItem = document.createElement("li"); // Bir liste elemanı oluşturmak için listItem adında bir değişken ve li adında bir html elementi oluşturup birbirine eşitledik.
+  listItem.className = "list-group-item d-flex justify-content-between"; // li elementinin class özelliklerini verdik.
+  
+  //Text Node Ekleme.
+  listItem.appendChild(document.createTextNode(newTodo)); // listItem elemenına string bir child olarak newTodo'dan gelen değeri atadık.
 
-function addTodo(e) {
-  const newTodo = todoInput.value.trim(); // todoInput değişkenindeki değeri value ile alıp newTodo değişkenine atadık. // trim özellği sayesinde sağdan soldan boşluklar kaldırıldı
+  //Link Oluşturma.
+  const link = document.createElement("a"); // Bir link oluşturmak için link adında bir değişken ve a adında bir html elemanı oluşturup birbirine eşitledik.
+  link.href = "#"; // li elementinin href özelliğini tanımladık.
+  link.className = "delete-item"; // li elementinin class özelliklerini tanımladık
+  link.innerHTML = " <i class = 'fa fa-remove'></i>"; // Linkin içine ikon ekledik
 
-  if (newTodo === "") {
-    showAlert("danger", "Lütfen bir todo girin..."); // inputtaki değer boş ise danger alert çalışacak
-  } else {
-    addTodoToUI(newTodo);
-    addTodoToStorage(newTodo);
-    showAlert("success", "Todo Oluşturuldu..."); // inputtaki değer dolu ise success çalışacak
-  }
+  // link değişkenini listItem değişkenine child olarak ekleme.
+  listItem.appendChild(link);  // ekleme yeri-appendchild-eklenen.
+  
+  //listItem değişkenini todoList değişkenine child olarak ekleme.
+  todoList.appendChild(listItem);
 
-  e.preventDefault(); // Elementin varsayılan özelliğini engeller
-}
-function getTodosFromStorage() {
-  // storage dan tüm todoarı alma
-  let todos;
-  if (localStorage.getItem("todos") === null) {
-    todos = [];
-  } else {
-    todos = JSON.parse(localStorage.getItem("todos"));
-  }
-
-  return todos;
-}
-function addTodoToStorage(newTodo) {
-  let todos = getTodosFromStorage();
-  todos.push(newTodo);
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function showAlert(type, message) {
-  const alert = document.createElement("div");
-  alert.className = `alert alert-${type}`; // typedan gelen değeri kullnaacak
-  alert.textContent = message; // messagedan gelen değeri kullanacak
-  firstCardBody.appendChild(alert); // alert değişkenini firstCardBody nin child ı olarak ekleycek
-
-  //  setTimeout metodu  // işlemin beli bir süre sonra gerçekleşmesini sağlayacak
-  setTimeout(function () {
-    alert.remove(); // alert divini kaldırır
-  }, 2000); // 2 saniye sonra divi kaldıracak
-}
-
-// string değerini UI'a ekleyecek.
-function addTodoToUI(newTodo) {
-  // List Item Oluşturma
-  const listItem = document.createElement("li");
-
-  // Link Oluşturma
-  const link = document.createElement("a");
-  link.href = "#";
-  link.className = "delete-item";
-  link.innerHTML = "<i class = 'fa fa-remove'></i>";
-
-  listItem.className = "list-group-item d-flex justify-content-between";
-
-  listItem.appendChild(document.createTextNode(newTodo)); // Text Node Ekleme
-  listItem.appendChild(link); // link elementini listItem içine child olarak ekler
-
-  // Todo List'e List Item'ı Ekleme
-  todoList.appendChild(listItem); //listItem elementini todoList içine child olarak ekler
-  todoInput.value = ""; // submit olduktan sonra inputu sıfırlar
+  // İnput alanını sıfırlama.
+  todoInput.value = "";
 }
