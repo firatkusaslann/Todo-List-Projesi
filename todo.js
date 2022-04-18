@@ -12,6 +12,23 @@ eventListeners(); // eventListeners function'ını çalıştırır
 // Tüm eventListener'lar
 function eventListeners() {
   form.addEventListener("submit", addTodo); // form değişkeninde submit olayı gerçekleşirse addTodo ismindeki function çalışacak
+  document.addEventListener("DOMContentLoaded", loadAllTodosToUI);
+  secondCardBody.addEventListener("click", deleteTodo);
+}
+
+function deleteTodo(e) {
+  if (e.target.className === "fa fa-remove");
+  {
+    e.target.parentElement.parentElement.remove();
+    showAlert("success", "Todo Silindi");
+  }
+}
+
+function loadAllTodosToUI() {
+  let todos = getTodosFromStorage();
+  todos.forEach(function (todo) {
+    addTodoToUI(todo);
+  });
 }
 
 function addTodo(e) {
@@ -30,7 +47,7 @@ function addTodo(e) {
 function getTodosFromStorage() {
   // storage dan tüm todoarı alma
   let todos;
-  if (localStroge.getItem("todos") === null) {
+  if (localStorage.getItem("todos") === null) {
     todos = [];
   } else {
     todos = JSON.parse(localStorage.getItem("todos"));
