@@ -14,10 +14,27 @@ function eventListeners() { // Tüm eventListener'ları burada vereceğiz. bu y�
 
 function addTodo(e) { 
   const newTodo = todoInput.value.trim();// todoInput'taki değeri aldık ve sağından solundan boşlukları temizleyerek newTodo değişkenine atadık.
-
-  addTodoToUI(newTodo);
+  
+  if (newTodo === "") { // eger input boş submit edilirse 
+    showalert("danger","Lütfen Bir Todo Girin!"); // showAlert fonksiyonunu çalıştır -- danger gösterir
+  }
+  else {
+    addTodoToUI(newTodo); // input dolu submit edilirse addTodoToUI fonsiyonunu çalıştır
+    showalert("success","Todo Başarıyla Eklendi!"); // ve showAlert fonksiyonunu çalıştır -- success gösterir
+  }
 
   e.preventDefault(); // Tarayıcının varsayılan özelliklerini engelledik. 
+}
+
+function showalert(type, message) { // alert mesajı göstermek için fonksiyon oluşturduk
+  const alert = document.createElement("div");
+  alert.className = `alert alert-${type}`; //burada temlate literal kullanarak değişkeni div e className olarak ekledik
+  alert.textContent = message;
+  firstCardBody.appendChild(alert);
+  // setTimeout - bu özellik 2 tane değer alır birincisi function ve ikincici çalışmak için beklediği saniye 
+  setTimeout(function () {
+    alert.remove();
+  },1500);
 }
 
 function addTodoToUI(newTodo) { // newTodo değişkeninden gelen string değerini list item olarak UI'a ekleyecek.
