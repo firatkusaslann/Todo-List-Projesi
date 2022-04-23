@@ -10,9 +10,37 @@ eventListeners(); // eventListeners içindeki event'leri burada çalıştırıyo
 
 function eventListeners() { // Tüm eventListener'ları burada vereceğiz. bu yüzden eventListeners isminde bir funtion açtık.
   form.addEventListener("submit", addTodo); // form elementinin içinde her hangi bir submit gerçekleştiğinde addTodo function'ı çalışsın dedik.
+  document.addEventListener("DOMContentLoaded", loadAllTodosToUI); // DOMContentLoaded eventi sayfa içeriği yüklendiğinde oluşur. bu yüzden burada sayfa yüklendiğinde loadAllTodosToUI funtion'ını çalıştırıp local storgae daki verileri documana yazdıracağız
+  secondCardBody.addEventListener("click", deleteTodo); // secondCardBody elementine bir click eventi olduğunda deleteTodo function'u çalışacak.
 }
 
-function addTodo(e) {
+function deleteTodo(e) { // todolaro uıdan silmek içinfunction açtık.
+  if (e.target.className === "fa fa-remove") { // tıklanan yerin className i fa fa-remove ise 
+    e.target.parentElement.parentElement.remove(); // tıklanan yerin parent elementinin parent elementi yani li yi sil
+    deleteTodoFromStorage(e.target.parentElement.parentElement.textContent);
+    showalert("success", "Todo Başarıyla Silindi") // silindikten sonra success göster
+  }
+}
+
+function deleteTodoFromStorage(deletetodo) {  // todoları storagedan silmek için bu function'ı açtık
+  let todos = getTodosFromStorage(); // arrayi aldık
+
+  todos.forEach(function (todo, index) {
+    if (todo.trim() === deletetodo.trim()) {
+      todos.splice(index, 1);
+    }
+  });
+  localStorage.setItem("todos", JSON.stringify(todos));
+}  
+
+function loadAllTodosToUI() { // sayfa yüklendiğinde verileri ekrana yazmak içn bu function açtık
+  let todos = getTodosFromStorage(); // Arrayi aldık
+  todos.forEach(function (todo) { // arrayin içindeki her bir elemanın üzerinde gezip değerlerini documana aktarmak için forEach döngüsünü kullandık
+    addTodoToUI(todo); // todoları addTodoToUI ile document a ekledik
+  })
+}
+
+function addTodo(e) { // girilen todoları buradaki işlemlerden geçtikten sonra  eklemek için bu function'ı açtık.
   const newTodo = todoInput.value.trim(); // todoInput'taki değeri aldık ve sağından solundan boşlukları temizleyerek newTodo değişkenine atadık.
 
   if (newTodo === "") { // eger input boş submit edilirse
@@ -38,7 +66,7 @@ function getTodosFromStorage() { // Storage'dan todoları almak için kullanaca�
   return todos; // bu function sonucunu başka bir yerde kullanmak gerekiyorsa o zaman return kullanmalıyım...
 }
 
-function addTodoToStorage(newTodo) { 
+function addTodoToStorage(newTodo) { // todoları storage'a eklemek için bu function'ı açtık
   let todos = getTodosFromStorage(); // neden burada çağırdık araştır ---------------------------
   todos.push(newTodo);  // push metodu, dizinin sonuna yeni değerler eklemek için kullanılır. İşlem sonucunda ise, dizinin yeni uzunluğunu geriye döner.
   localStorage.setItem("todos", JSON.stringify(todos)); // arrayleri string veriye çevirmek için JSON.stringify kulllanılır
