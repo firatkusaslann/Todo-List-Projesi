@@ -3,8 +3,8 @@ const todoInput = document.querySelector("#todo");
 const todoList = document.querySelector(".list-group");
 const firstCardBody = document.querySelectorAll(".card-body")[0];
 const secondCardBody = document.querySelectorAll(".card-body")[1];
-const filter = document.querySelectorAll("#filter");
-const clearTodos = document.querySelector("#clear-todos");
+const filter = document.querySelector("#filter");
+const clearButton = document.querySelector("#clear-todos");
 
 eventListeners(); // eventListeners içindeki event'leri burada çalıştırıyoruz.
 
@@ -12,6 +12,36 @@ function eventListeners() { // Tüm eventListener'ları burada vereceğiz. bu y�
   form.addEventListener("submit", addTodo); // form elementinin içinde her hangi bir submit gerçekleştiğinde addTodo function'ı çalışsın dedik.
   document.addEventListener("DOMContentLoaded", loadAllTodosToUI); // DOMContentLoaded eventi sayfa içeriği yüklendiğinde oluşur. bu yüzden burada sayfa yüklendiğinde loadAllTodosToUI funtion'ını çalıştırıp local storgae daki verileri documana yazdıracağız
   secondCardBody.addEventListener("click", deleteTodo); // secondCardBody elementine bir click eventi olduğunda deleteTodo function'u çalışacak.
+  filter.addEventListener("keyup",filterTodos); // inputtaki her karakteri almak için keyboard eventlerinden keyup'ı kullandık.
+  clearButton.addEventListener("click",clearAllTodos); // tüm todoları hem UI'dan hem de storagedan silmek için botona click eventi verdik
+}
+
+function clearAllTodos() { // hem UI'dan hem de storagedan silmek için bir funtion açtık
+  if (confirm("Tümünü silmek istediğinize emin misiniz?")); { // onaylama kurtusundan gelecek olan komuta göre işlem yapmak için oluşturuldu ve if sorgusuna alındı
+    // todoları UI'dan kaldırma
+   // todoList.innerHTML = ""; // yavaş yöntem 
+    while (todoList.firstElementChild != null) {  // todoList listesinin ilk child elementi null bir değer OLMADIĞI sürece 
+      todoList.removeChild(todoList.firstElementChild); // her döngüde todoList'in first elementini silecek ve döndürecek 
+    }
+    localStorage.removeItem("todos");
+  }
+}
+
+
+function filterTodos(e) {  // todoları filtrelemek için bir funtion açtık
+  const filterValue = e.target.value.toLowerCase(); // inputun girilen değeri küçük harfe çevirerek filterValue değişkenine atadık
+  const listItems = document.querySelectorAll(".list-group-item"); // tüm liste elemenlerını seçtik ve listItems değişkenine atadık
+  
+  listItems.forEach(function (listItem) { // listItems içindeki tüm liste elementlerinin üzerinde tek tek gezinmek için forEach döngüsü açtık.
+    const text = listItem.textContent.toLowerCase(); // listItem içindeki text contentleri almak için listItem içindeki contentleri küçük harfe çevirip text değişkenine atadık
+     if (text.indexOf(filterValue) === -1) { // indexOf ile filterValue değişkenindeki indexleri text değişkenindeki indexler ile kıyasladık. ve eğer -1!e eşitse yani bulamadıysa display özelliklerini none yapsın dedik
+       // bulamadı
+       listItem.setAttribute("style", "display : none !important" ); //listItem değişkenine statik olarak attribute ekledik ve important ile önemli olduğunu belirttik.
+    }
+     else {
+       listItem.setAttribute("style", "display : block"); // index değerleri bulunursa bulunan elementlerin display özelliklerii block yap dedik
+    }
+  });
 }
 
 function deleteTodo(e) { // todolaro uıdan silmek içinfunction açtık.
