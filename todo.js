@@ -23,7 +23,7 @@ function clearAllTodos() { // hem UI'dan hem de storagedan silmek için bir funt
     while (todoList.firstElementChild != null) {  // todoList listesinin ilk child elementi null bir değer OLMADIĞI sürece 
       todoList.removeChild(todoList.firstElementChild); // her döngüde todoList'in first elementini silecek ve döndürecek 
     }
-    localStorage.removeItem("todos");
+    localStorage.removeItem("todos"); // tüm todoları locxalStoragedan silmek için key'ini  silmek yeterli oluyor.
   }
 }
 
@@ -73,7 +73,12 @@ function loadAllTodosToUI() { // sayfa yüklendiğinde verileri ekrana yazmak i�
 function addTodo(e) { // girilen todoları buradaki işlemlerden geçtikten sonra  eklemek için bu function'ı açtık.
   const newTodo = todoInput.value.trim(); // todoInput'taki değeri aldık ve sağından solundan boşlukları temizleyerek newTodo değişkenine atadık.
 
-  if (newTodo === "") { // eger input boş submit edilirse
+  let todos = getTodosFromStorage();
+  if (todos.includes(newTodo)) { // eğer storageda newTododan alınan değer varsa ekleme (include)
+    showalert("danger", "Aynı Todoları giremezsiniz!")
+  }
+  else {
+      if (newTodo === "") { // eger input boş submit edilirse
     showalert("danger", "Lütfen Bir Todo Girin!"); // showAlert fonksiyonunu çalıştır -- danger gösterir
   } else {
     addTodoToUI(newTodo); // input dolu submit edilirse addTodoToUI fonsiyonunu çalıştır
@@ -83,6 +88,8 @@ function addTodo(e) { // girilen todoları buradaki işlemlerden geçtikten sonr
     showalert("success", "Todo Başarıyla Eklendi!"); // ve showAlert fonksiyonunu çalıştır -- success gösterir
   }
 
+  }
+    
   e.preventDefault(); // Tarayıcının varsayılan özelliklerini engelledik.
 }
 
